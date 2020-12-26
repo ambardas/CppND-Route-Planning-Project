@@ -4,6 +4,21 @@ This repo contains the starter code for the Route Planning project.
 
 <img src="map.png" width="600" height="450" />
 
+## Ambars edits on this forked repo
+
+- How to get it installed and running in ubuntu : [https://github.com/ambardas/cpp_experiments_and_practice/blob/master/udacity_route_planning_project/Readme.md](https://github.com/ambardas/cpp_experiments_and_practice/blob/master/udacity_route_planning_project/Readme.md)
+- Changes made to this forked repo: 
+  - Todo 1: `src/main.cpp`
+  - Todo 2 to 7: `src/route_planner.cpp`
+- Most work done was in recognizing the interfaces to the modules from the `src/model.h`, `src/route_model.h`, `src/route_planner.h` files
+- Check for success
+  - `mkdir build && cd build && cmake .. && make`
+  - Your code is ready and compiled now
+  - Test success: `cd build && ./test`
+    - <img src="test_success.png" width="600" height="450" />
+  - Example Routing: `cd build && ./OSM_A_star_search`
+    - <img src="route_draw.png" width="300" height="900" />
+
 ## Cloning
 
 When cloning this project, be sure to use the `--recurse-submodules` flag. Using HTTPS:
