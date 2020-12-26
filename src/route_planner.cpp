@@ -59,7 +59,8 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 RouteModel::Node *RoutePlanner::NextNode() {
 
     RouteModel::Node* next_node;
-    float least_score;
+    // High simulated first least_score = 10 heuristic trips from start_node to end_node
+    float least_score = CalculateHValue(start_node) * 10;
     int next_node_pos {0};
     int counter {0};
     for (RouteModel::Node* a_node: open_list){
@@ -122,7 +123,7 @@ void RoutePlanner::AStarSearch() {
     // TODO: Implement your solution here.
     current_node->visited = true;
 
-    while (current_node->x != end_node->x && current_node->y != end_node->y){
+    while (current_node != end_node){
         AddNeighbors(current_node);
         current_node = NextNode();
     }
