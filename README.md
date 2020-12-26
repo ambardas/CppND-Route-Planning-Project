@@ -15,9 +15,9 @@ This repo contains the starter code for the Route Planning project.
   - `mkdir build && cd build && cmake .. && make`
   - Your code is ready and compiled now
   - Test success: `cd build && ./test`
-    - <img src="test_success.png" width="600" height="450" />
+    - <img src="test_success.png" width="800" height="400" />
   - Example Routing: `cd build && ./OSM_A_star_search`
-    - <img src="route_draw.png" width="300" height="900" />
+    - <img src="route_draw.png" width="700" height="650" />
 
 ## Cloning
 
