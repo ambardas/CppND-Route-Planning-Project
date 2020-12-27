@@ -39,12 +39,14 @@ float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
 
 void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     current_node->FindNeighbors();
+    // for (auto *a_neighbour: current_node->neighbors){  --> Valid way to define the loop too, is better.
+    // for (auto a_neighbour: current_node->neighbors){   --> Valid way to define the loop too
     for (RouteModel::Node *a_neighbour: current_node->neighbors){
         a_neighbour->parent = current_node;
         a_neighbour->h_value = CalculateHValue(a_neighbour);
         a_neighbour->g_value = current_node->g_value + current_node->distance(*a_neighbour);
         a_neighbour->visited = true;
-        open_list.push_back(a_neighbour);
+        open_list.emplace_back(a_neighbour);
     }
 }
 
@@ -56,23 +58,38 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 // - Remove that node from the open_list.
 // - Return the pointer.
 
+bool Compare(RouteModel::Node* node_a, RouteModel::Node* node_b){ 
+    return (node_a->h_value + node_a->g_value) > (node_b->h_value + node_b->g_value);
+}
+
+
 RouteModel::Node *RoutePlanner::NextNode() {
 
+    // Option 1:
+    // RouteModel::Node* next_node;
+    // // High simulated first least_score = 10 heuristic trips from start_node to end_node
+    // float least_score = CalculateHValue(start_node) * 10;
+    // int next_node_pos {0};
+    // int counter {0};
+    // // for (auto *a_node: open_list){  --> Valid way to define the loop too, is better.
+    // // for (auto a_node: open_list){   --> Valid way to define the loop too
+    // for (RouteModel::Node* a_node: open_list){
+    //     float score = a_node->h_value + a_node->g_value; 
+    //     if (score<least_score){
+    //         least_score = score;
+    //         next_node = a_node;
+    //         next_node_pos = counter;
+    //     }
+    //     counter ++;
+    // }
+    // open_list.erase(open_list.begin()+next_node_pos);
+    // return next_node;
+
+    // Option 2:
     RouteModel::Node* next_node;
-    // High simulated first least_score = 10 heuristic trips from start_node to end_node
-    float least_score = CalculateHValue(start_node) * 10;
-    int next_node_pos {0};
-    int counter {0};
-    for (RouteModel::Node* a_node: open_list){
-        float score = a_node->h_value + a_node->g_value; 
-        if (score<least_score){
-            least_score = score;
-            next_node = a_node;
-            next_node_pos = counter;
-        }
-        counter ++;
-    }
-    open_list.erase(open_list.begin()+next_node_pos);
+    std::sort(open_list.begin(), open_list.end(), Compare);
+    next_node = open_list.back();
+    open_list.pop_back();
     return next_node;
 }
 
@@ -86,27 +103,43 @@ RouteModel::Node *RoutePlanner::NextNode() {
 //   of the vector, the end node should be the last element.
 
 std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node *current_node) {
+    
+    //Option 1:  
+    // // Create path_found vector
+    // distance = 0.0f;
+    // std::vector<RouteModel::Node> path_found;
+    // std::vector<RouteModel::Node*> reverse_path_found;
+    // // TODO: Implement your solution here.
+    // RouteModel::Node* next_parent = current_node;
+    // while (true){
+    //     reverse_path_found.emplace_back(next_parent);
+    //     // if (next_parent->x == start_node->x && next_parent->y == start_node->y) break;
+    //     if (next_parent == start_node) break; // Simpler implementation of the above since both are pointers
+    //     distance += next_parent->distance(*next_parent->parent);
+    //     next_parent = next_parent->parent;
+    // }
+    // for (int i = reverse_path_found.size() -1; i >= 0; i --)
+    //     path_found.emplace_back(*reverse_path_found[i]);
+
+    // distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
+    // return path_found;
+
+
+    //Option 2:   
     // Create path_found vector
     distance = 0.0f;
     std::vector<RouteModel::Node> path_found;
-    std::vector<RouteModel::Node*> reverse_path_found;
-
     // TODO: Implement your solution here.
     RouteModel::Node* next_parent = current_node;
     while (true){
-        reverse_path_found.push_back(next_parent);
-        if (next_parent->x == start_node->x && next_parent->y == start_node->y) break;
-        // if (next_parent == start_node) break; // Simpler implementation of the above since both are pointers
+        path_found.emplace_back(*next_parent);
+        if (next_parent == start_node) break;
         distance += next_parent->distance(*next_parent->parent);
         next_parent = next_parent->parent;
     }
-
-    for (int i = reverse_path_found.size() -1; i >= 0; i --)
-        path_found.push_back(*reverse_path_found[i]);
-    
+    std::reverse (path_found.begin(), path_found.end());
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     return path_found;
-
 }
 
 
