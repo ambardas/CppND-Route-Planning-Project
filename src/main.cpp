@@ -10,7 +10,24 @@
 
 using namespace std::experimental;
 
-bool debug_mode = true;
+bool debug_mode = false;
+
+float checkUserInput(float val){
+    std::cin >> val;
+    if (val < 0 || val > 100){
+        std::cout << "Enter a value between and including 0 to 100.\n";
+    }
+    return val;
+}
+
+float getUserInput(std::string var_name){
+    float val{-1.0f};
+    std::cout << "\nEnter "<< var_name <<" : ";
+    while (val < 0 || val > 100){
+        val = checkUserInput(val);
+    }
+    return val;
+}
 
 static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 {   
@@ -64,14 +81,10 @@ int main(int argc, const char **argv)
     float end_y = 90.0f;
 
     if (debug_mode == false) {
-        std::cout << "\nEnter start_x : ";
-        std::cin >> start_x;
-        std::cout << "\nEnter start_y : ";
-        std::cin >> start_y;
-        std::cout << "\nEnter end_x : ";
-        std::cin >> end_x;
-        std::cout << "\nEnter end_y : ";
-        std::cin >> end_y;
+        start_x = getUserInput("start_x");
+        start_y = getUserInput("start_y");
+        end_x = getUserInput("end_x");
+        end_y = getUserInput("end_y");
     }
 
     // Build Model.
